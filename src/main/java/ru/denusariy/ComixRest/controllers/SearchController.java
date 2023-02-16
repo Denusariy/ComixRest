@@ -32,28 +32,22 @@ public class SearchController {
     }
 
     @GetMapping(value = "/writer", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @Operation(summary = "Получить список комиксов с указанным в запросе сценаристом, ключ \"query\"", responses = {
-            @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "400", description = "BAD REQUEST")
-    })
+    @Operation(summary = "Получить список комиксов с указанным в запросе сценаристом, ключ \"query\"",
+            responses = @ApiResponse(responseCode = "200", description = "OK"))
     public ResponseEntity<List<ComicResponseDTO>> searchByWriter(@RequestParam("query") String query) {
         return ResponseEntity.ok(comicService.findByWriter(query));
     }
 
     @GetMapping(value = "/artist", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @Operation(summary = "Получить список комиксов с указанным в запросе художником, ключ \"query\"", responses = {
-            @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "400", description = "BAD REQUEST")
-    })
+    @Operation(summary = "Получить список комиксов с указанным в запросе художником, ключ \"query\"",
+            responses = @ApiResponse(responseCode = "200", description = "OK"))
     public ResponseEntity<List<ComicResponseDTO>> searchByArtist(@RequestParam("query") String query) {
         return ResponseEntity.ok(comicService.findByArtist(query));
     }
 
     @GetMapping(value = "/title", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @Operation(summary = "Получить список книг, содержащих в названии указанную строку, ключ \"query\"", responses = {
-            @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "400", description = "BAD REQUEST")
-    })
+    @Operation(summary = "Получить список книг, содержащих в названии указанную строку, ключ \"query\"",
+            responses = @ApiResponse(responseCode = "200", description = "OK"))
     public ResponseEntity<List<BookResponseDTO>> searchByTitle(@RequestParam("query") String query) {
         return ResponseEntity.ok(bookService.findByTitle(query));
     }

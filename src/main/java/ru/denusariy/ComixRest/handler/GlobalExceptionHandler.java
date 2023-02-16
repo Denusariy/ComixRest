@@ -4,7 +4,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.denusariy.ComixRest.domain.dto.response.errors.ErrorResponseDTO;
 import ru.denusariy.ComixRest.domain.dto.response.errors.ValidationResponseDTO;
 import ru.denusariy.ComixRest.exception.*;
 import java.time.LocalDateTime;
@@ -18,21 +20,21 @@ public class GlobalExceptionHandler {
     private static final String COMMENT = "comment";
     private static final String DATE_PATTERN = "dd-MM-yyyy HH:mm:ss";
 
-    @ExceptionHandler(BookNotFoundException.class)
-    public ResponseEntity<?> handleException(BookNotFoundException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    //Обработка BookNotFoundException c созданием Response DTO
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponseDTO handle(BookNotFoundException e) {
+        return new ErrorResponseDTO(e.getStatus(), e.getMessage());
     }
 
-    @ExceptionHandler(ComicNotFoundException.class)
-    public ResponseEntity<?> handleException(ComicNotFoundException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    //Обработка ComicNotFoundException c созданием Response DTO
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponseDTO handle(ComicNotFoundException e) {
+        return new ErrorResponseDTO(e.getStatus(), e.getMessage());
     }
 
-    @ExceptionHandler(BookNotUpdatedException.class)
-    public ResponseEntity<ValidationResponseDTO> handleInvalidArgument(BookNotUpdatedException ex) {
-        return getInternalServerErrorResponseEntity(ex);
-    }
-
+    //Создание DTO при ошибке валидации
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ValidationResponseDTO> handleInvalidArgument(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
@@ -49,11 +51,13 @@ public class GlobalExceptionHandler {
                         .build());
     }
 
+    //обработка остальных RuntimeException
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ValidationResponseDTO> handleInvalidArgument(RuntimeException ex) {
         return getInternalServerErrorResponseEntity(ex);
     }
 
+    //создание DTO при RuntimeException со статусом 500
     private ResponseEntity<ValidationResponseDTO> getInternalServerErrorResponseEntity(RuntimeException ex) {
         return ResponseEntity
                 .internalServerError()

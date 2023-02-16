@@ -23,10 +23,7 @@ public class BookController {
 
     @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
     @Operation(summary = "Получение списка всех книг. Пагинация по ключам \"page\" и \"size\" в запросе",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "OK"),
-                    @ApiResponse(responseCode = "400", description = "BAD REQUEST")
-            })
+            responses = @ApiResponse(responseCode = "200", description = "OK"))
     public ResponseEntity<List<BookResponseDTO>> getAllBooks(@RequestParam(value = "page", defaultValue = "0") Integer page,
                                                        @RequestParam(value = "size", defaultValue = "20") Integer size) {
         return ResponseEntity.ok(bookService.findAllWithPagination(page, size));
@@ -35,7 +32,6 @@ public class BookController {
     @GetMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
     @Operation(summary = "Получение книги по id", responses = {
             @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND")
     })
     public ResponseEntity<BookResponseDTO> show(@PathVariable("id") int id) {
@@ -53,9 +49,8 @@ public class BookController {
 
     @PatchMapping (value = "/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    @Operation(summary = "Изменение книги по id. Присутствует валидация", responses = {
+    @Operation(summary = "Изменение книги по id", responses = {
             @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND")
     })
     public ResponseEntity<BookResponseDTO> edit(@PathVariable("id") int id,
@@ -65,7 +60,6 @@ public class BookController {
     @DeleteMapping(value = "/{id}", produces = {MediaType.TEXT_PLAIN_VALUE})
     @Operation(summary = "Удаление книги по id", responses = {
             @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND")
     })
     public ResponseEntity<String> delete(@PathVariable("id") int id) {
