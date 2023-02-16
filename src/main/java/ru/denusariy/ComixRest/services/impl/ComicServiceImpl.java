@@ -27,6 +27,7 @@ public class ComicServiceImpl implements ComicService {
     private final BookRepository bookRepository;
     private final ModelMapper modelMapper;
 
+    //Сохранить комикс с привязкой к книге по её id
     @Transactional
     public ComicResponseDTO save(ComicRequestDTO comicRequestDTO) {
         Book book = bookRepository.findById(comicRequestDTO.getBookId()).orElseThrow(BookNotFoundException::new);
@@ -36,6 +37,7 @@ public class ComicServiceImpl implements ComicService {
         return convertToComicResponseDTO(newComic);
     }
 
+    //Обновить комикс по полям
     @Transactional
     public ComicResponseDTO update(int id, Map<String, Object> fields) {
         Comic comicToBeUpdated = comicRepository.findById(id).orElseThrow(ComicNotFoundException::new);
@@ -48,6 +50,7 @@ public class ComicServiceImpl implements ComicService {
         return convertToComicResponseDTO(comicToBeUpdated);
     }
 
+    //Удалить комикс по id
     @Transactional
     public String delete(int id) {
         Comic comicToDelete = comicRepository.findById(id).orElseThrow(ComicNotFoundException::new);
@@ -56,6 +59,7 @@ public class ComicServiceImpl implements ComicService {
         return title;
     }
 
+    //Получить список всех художников и сценаристов в виде ResponseDTO
     public ArtistsWritersResponseDTO findArtistsWriters() {
         ArtistsWritersResponseDTO responseDTO = new ArtistsWritersResponseDTO();
         responseDTO.setArtists(allArtists());
@@ -63,46 +67,52 @@ public class ComicServiceImpl implements ComicService {
         return responseDTO;
     }
 
+    //Получить список всех сценаристов. Если в поле writer несколько человек, то поле делится токенайзером
     @Transactional(readOnly = true)
     public List<String> allWriters() {
-        Set<String> allWriters = new HashSet<String>();
+        Set<String> allWriters = new HashSet<>();
         List<Comic> comics = comicRepository.findAll();
         for(Comic comic : comics){
             StringTokenizer tokenizer = new StringTokenizer(comic.getWriter(), ",");
             while(tokenizer.hasMoreTokens())
                 allWriters.add(tokenizer.nextToken().trim());
         }
-        return new ArrayList<String>(allWriters);
+        return new ArrayList<>(allWriters);
     }
 
+    //Получить список всех художников. Если в поле artist несколько человек, то поле делится токенайзером
     @Transactional(readOnly = true)
     public List<String> allArtists() {
-        Set<String> allArtists = new HashSet<String>();
+        Set<String> allArtists = new HashSet<>();
         List<Comic> comics = comicRepository.findAll();
         for(Comic comic : comics){
             StringTokenizer tokenizer = new StringTokenizer(comic.getArtist(), ",");
             while(tokenizer.hasMoreTokens())
                 allArtists.add(tokenizer.nextToken().trim());
         }
-        return new ArrayList<String>(allArtists);
+        return new ArrayList<>(allArtists);
     }
 
+    //Получить все комиксы с заданным сценаристом
     @Transactional(readOnly = true)
     public List<ComicResponseDTO> findByWriter(String query) {
         return comicRepository.findByWriterContains(query).stream().map(this::convertToComicResponseDTO)
                 .collect(Collectors.toList());
     }
 
+    //Получить все комиксы с заданным художником
     @Transactional(readOnly = true)
     public List<ComicResponseDTO> findByArtist(String query) {
         return comicRepository.findByArtistContains(query).stream().map(this::convertToComicResponseDTO)
                 .collect(Collectors.toList());
     }
 
+    //Маппинг из ComicRequestDTO в Comic
     private Comic convertToComic(ComicRequestDTO comicRequestDTO) {
         return modelMapper.map(comicRequestDTO, Comic.class);
     }
 
+    //Маппинг из Comic в ComicResponseDTO
     private ComicResponseDTO convertToComicResponseDTO(Comic comic) {
         return modelMapper.map(comic, ComicResponseDTO.class);
     }

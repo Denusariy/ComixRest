@@ -32,9 +32,8 @@ public class ComicController {
 
     @PatchMapping(value = "/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    @Operation(summary = "Изменение комикса по id. Присутствует валидация", responses = {
+    @Operation(summary = "Изменение комикса по id", responses = {
             @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND")
     })
     public ResponseEntity<ComicResponseDTO> edit(@PathVariable("id") int id,
@@ -45,7 +44,6 @@ public class ComicController {
     @DeleteMapping(value = "/{id}", produces = {MediaType.TEXT_PLAIN_VALUE})
     @Operation(summary = "Удаление комикса по id", responses = {
             @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND")
     })
     public ResponseEntity<String> delete(@PathVariable("id") int id) {
