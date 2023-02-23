@@ -1,7 +1,9 @@
 package ru.denusariy.ComixRest.domain.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.denusariy.ComixRest.domain.enums.Format;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -10,6 +12,8 @@ import javax.validation.constraints.NotBlank;
 
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class BookRequestDTO {
     @Schema(description = "Название книги")
     @NotBlank(message = "Название книги не должно быть пустым")

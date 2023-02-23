@@ -32,10 +32,9 @@ public class BookServiceImpl implements BookService {
 
     //Получить все книги, используя пагинацию. Сортировка по названию
     @Transactional(readOnly = true)
-    public List<BookResponseDTO> findAllWithPagination(Integer page, Integer size) {
+    public Page<BookResponseDTO> findAllWithPagination(Integer page, Integer size) {
             Pageable pageable = PageRequest.of(page, size, Sort.by("title"));
-            Page<Book> books = bookRepository.findAll(pageable);
-            return books.getContent().stream().map(this::convertToBookResponseDTO).collect(Collectors.toList());
+            return bookRepository.findAll(pageable).map(this::convertToBookResponseDTO);
     }
 
 
@@ -89,12 +88,12 @@ public class BookServiceImpl implements BookService {
     }
 
     //Маппинг из Book в BookResponseDTO
-    private BookResponseDTO convertToBookResponseDTO(Book book) {
+    public BookResponseDTO convertToBookResponseDTO(Book book) {
         return modelMapper.map(book, BookResponseDTO.class);
     }
 
     //Маппинг из BookRequestDTO в Book
-    private Book convertToBook(BookRequestDTO bookRequestDTO) {
+    public Book convertToBook(BookRequestDTO bookRequestDTO) {
         return modelMapper.map(bookRequestDTO, Book.class);
     }
 

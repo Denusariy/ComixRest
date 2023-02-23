@@ -1,12 +1,17 @@
 package ru.denusariy.ComixRest.domain.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ComicRequestDTO {
     @Schema(description = "Название комикса")
     @NotBlank(message = "Название комикса не должно быть пустым")

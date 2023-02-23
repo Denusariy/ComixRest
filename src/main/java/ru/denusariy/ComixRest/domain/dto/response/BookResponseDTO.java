@@ -7,6 +7,8 @@ import ru.denusariy.ComixRest.domain.enums.Format;
 import java.util.List;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class BookResponseDTO {
     @Schema(description = "Название книги")
     private String title;
