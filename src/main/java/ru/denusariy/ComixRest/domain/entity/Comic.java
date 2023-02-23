@@ -1,7 +1,9 @@
 package ru.denusariy.ComixRest.domain.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
@@ -12,6 +14,8 @@ import javax.validation.constraints.NotBlank;
 @Data
 @Entity
 @DynamicUpdate
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "comic")
 public class Comic {
     @Id

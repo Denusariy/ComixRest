@@ -135,19 +135,24 @@ class BookServiceImplTest {
 
     @Nested
     class SaveTest{
-        @Test
-        void should_SaveBookAndReturnResponseDTO() {
-            //given
-            BookRequestDTO requestDTO = new BookRequestDTO("TestBook", 2000, Format.SING, false,
+        private BookRequestDTO requestDTO;
+        private Book book;
+
+        @BeforeEach
+        void setup() {
+            this.requestDTO = new BookRequestDTO("TestBook", 2000, Format.SING, false,
                     false, null);
+            this.book = modelMapperMock.map(requestDTO, Book.class);
+        }
+        @Test
+        void should_ReturnResponseDTO_When_SaveNewBook() {
+            //given
             BookResponseDTO expected = new BookResponseDTO("TestBook", 2000, Format.SING, false,
                     false, null, null);
-            Book book = modelMapperMock.map(requestDTO, Book.class);
             when(bookRepositoryMock.save(book)).thenReturn(book);
             //when
             BookResponseDTO actual = bookService.save(requestDTO);
             //then
-            verify(bookRepositoryMock).save(book);
             assertAll(
                     () -> assertEquals(expected.getTitle(), actual.getTitle()),
                     () -> assertEquals(expected.getYear(), actual.getYear()),
@@ -157,6 +162,16 @@ class BookServiceImplTest {
                     () -> assertEquals(expected.getSignature(), actual.getSignature()),
                     () -> assertEquals(expected.getComics(), actual.getComics())
             );
+        }
+
+        @Test
+        void should_SaveBook() {
+            //given
+            when(bookRepositoryMock.save(book)).thenReturn(book);
+            //when
+            bookService.save(requestDTO);
+            //then
+            verify(bookRepositoryMock).save(book);
         }
     }
 
