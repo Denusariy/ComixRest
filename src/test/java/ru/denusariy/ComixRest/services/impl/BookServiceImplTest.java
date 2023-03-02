@@ -18,11 +18,11 @@ import ru.denusariy.ComixRest.exception.BookNotFoundException;
 import ru.denusariy.ComixRest.repositories.BookRepository;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class BookServiceImplTest {
@@ -120,12 +120,35 @@ class BookServiceImplTest {
 
     @Nested
     class FindAllWithPaginationTest{
+
+        private Pageable pageable;
+
+        @BeforeEach
+        void setup() {
+            this.pageable = PageRequest.of(1, 2, Sort.by("title"));
+        }
         @Test
         void should_ReturnEmptyPage_When_ListIsEmpty() {
             //given
-            Pageable pageable = PageRequest.of(1, 2, Sort.by("title"));
-            Page<BookResponseDTO> expected = new PageImpl(Collections.emptyList(), pageable, 0L);
-            when(bookRepositoryMock.findAll(pageable)).thenReturn(new PageImpl(Collections.emptyList(), pageable, 0L));
+            Page<BookResponseDTO> expected = new PageImpl<>(Collections.emptyList(), pageable, 0L);
+            when(bookRepositoryMock.findAll(pageable)).thenReturn(new PageImpl<>(Collections.emptyList(), pageable, 0L));
+            //when
+            Page<BookResponseDTO> actual = bookService.findAllWithPagination(1, 2);
+            //then
+            assertEquals(expected, actual);
+        }
+
+        @Test
+        void should_ReturnValidPage_When_ListIsNotEmpty() {
+            //given
+            List<Book> books = new ArrayList<>(List.of(
+                    new Book(1, "Title", 2000, Format.SING, false, false, null, null),
+                    new Book(2, "Title2", 2002, Format.SING, false, false, null, null)
+            ));
+            List<BookResponseDTO> responseDTO = books.stream()
+                    .map(book -> modelMapperMock.map(book, BookResponseDTO.class)).collect(Collectors.toList());
+            Page<BookResponseDTO> expected = new PageImpl<>(responseDTO, pageable, responseDTO.size());
+            when(bookRepositoryMock.findAll(pageable)).thenReturn(new PageImpl<>(books, pageable, books.size()));
             //when
             Page<BookResponseDTO> actual = bookService.findAllWithPagination(1, 2);
             //then
@@ -135,18 +158,12 @@ class BookServiceImplTest {
 
     @Nested
     class SaveTest{
-        private BookRequestDTO requestDTO;
-        private Book book;
-
-        @BeforeEach
-        void setup() {
-            this.requestDTO = new BookRequestDTO("TestBook", 2000, Format.SING, false,
-                    false, null);
-            this.book = modelMapperMock.map(requestDTO, Book.class);
-        }
         @Test
         void should_ReturnResponseDTO_When_SaveNewBook() {
             //given
+            BookRequestDTO requestDTO = new BookRequestDTO("TestBook", 2000, Format.SING, false,
+                    false, null);
+            Book book = modelMapperMock.map(requestDTO, Book.class);
             BookResponseDTO expected = new BookResponseDTO("TestBook", 2000, Format.SING, false,
                     false, null, null);
             when(bookRepositoryMock.save(book)).thenReturn(book);
@@ -162,15 +179,6 @@ class BookServiceImplTest {
                     () -> assertEquals(expected.getSignature(), actual.getSignature()),
                     () -> assertEquals(expected.getComics(), actual.getComics())
             );
-        }
-
-        @Test
-        void should_SaveBook() {
-            //given
-            when(bookRepositoryMock.save(book)).thenReturn(book);
-            //when
-            bookService.save(requestDTO);
-            //then
             verify(bookRepositoryMock).save(book);
         }
     }
@@ -337,6 +345,7 @@ class BookServiceImplTest {
             String actual = bookService.delete(1);
             //then
             assertEquals(expected, actual);
+            verify(bookRepositoryMock).delete(book);
         }
 
         @Test
@@ -347,15 +356,7 @@ class BookServiceImplTest {
             Executable executable = () -> bookService.delete(anyInt());
             //then
             assertThrows(BookNotFoundException.class, executable);
-        }
-        @Test
-        void should_DeleteBook_When_InputOK() {
-            //given
-            when(bookRepositoryMock.findById(1)).thenReturn(Optional.of(book));
-            //when
-            bookService.delete(1);
-            //then
-            verify(bookRepositoryMock).delete(book);
+            verify(bookRepositoryMock, never()).delete(book);
         }
     }
 }

@@ -28,41 +28,53 @@ public class SearchController {
     @Operation(summary = "Получить списки всех художников и сценаристов для создания выпадающих списков",
             responses = @ApiResponse(responseCode = "200", description = "OK"))
     public ResponseEntity<ArtistsWritersResponseDTO> getArtistsWriters() {
-        return ResponseEntity.ok(comicService.findArtistsWriters());
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(comicService.findArtistsWriters());
     }
 
     @GetMapping(value = "/writer", produces = {MediaType.APPLICATION_JSON_VALUE})
     @Operation(summary = "Получить список комиксов с указанным в запросе сценаристом, ключ \"query\"",
             responses = @ApiResponse(responseCode = "200", description = "OK"))
     public ResponseEntity<List<ComicResponseDTO>> searchByWriter(@RequestParam("query") String query) {
-        return ResponseEntity.ok(comicService.findByWriter(query));
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(comicService.findByWriter(query));
     }
 
     @GetMapping(value = "/artist", produces = {MediaType.APPLICATION_JSON_VALUE})
     @Operation(summary = "Получить список комиксов с указанным в запросе художником, ключ \"query\"",
             responses = @ApiResponse(responseCode = "200", description = "OK"))
     public ResponseEntity<List<ComicResponseDTO>> searchByArtist(@RequestParam("query") String query) {
-        return ResponseEntity.ok(comicService.findByArtist(query));
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(comicService.findByArtist(query));
     }
 
     @GetMapping(value = "/title", produces = {MediaType.APPLICATION_JSON_VALUE})
     @Operation(summary = "Получить список книг, содержащих в названии указанную строку, ключ \"query\"",
             responses = @ApiResponse(responseCode = "200", description = "OK"))
     public ResponseEntity<List<BookResponseDTO>> searchByTitle(@RequestParam("query") String query) {
-        return ResponseEntity.ok(bookService.findByTitle(query));
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(bookService.findByTitle(query));
     }
 
     @GetMapping(value = "/alt_cover", produces = {MediaType.APPLICATION_JSON_VALUE})
     @Operation(summary = "Получить список книг с альтернативной обложкой",
             responses = @ApiResponse(responseCode = "200", description = "OK"))
     public ResponseEntity<List<BookResponseDTO>> searchByCover() {
-        return ResponseEntity.ok(bookService.findBookWithAltCover());
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(bookService.findBookWithAltCover());
     }
 
     @GetMapping(value = "/autograph", produces = {MediaType.APPLICATION_JSON_VALUE})
     @Operation(summary = "Получить список книг с автографом",
             responses = @ApiResponse(responseCode = "200", description = "OK"))
     public ResponseEntity<List<BookResponseDTO>> searchByAutograph() {
-        return ResponseEntity.ok(bookService.findBookWithAutograph());
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(bookService.findBookWithAutograph());
     }
 }

@@ -27,7 +27,9 @@ public class ComicController {
             @ApiResponse(responseCode = "404", description = "NOT FOUND, не найдена книга с указанным id")
     })
     public ResponseEntity<ComicResponseDTO> create(@RequestBody @Valid ComicRequestDTO comicRequestDTO) {
-        return ResponseEntity.ok(comicService.save(comicRequestDTO));
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(comicService.save(comicRequestDTO));
     }
 
     @PatchMapping(value = "/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE},
@@ -38,7 +40,9 @@ public class ComicController {
     })
     public ResponseEntity<ComicResponseDTO> edit(@PathVariable("id") int id,
                                                  @RequestBody Map<String, Object> fields) {
-        return ResponseEntity.ok(comicService.update(id, fields));
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(comicService.update(id, fields));
     }
 
     @DeleteMapping(value = "/{id}", produces = {MediaType.TEXT_PLAIN_VALUE})
@@ -47,6 +51,8 @@ public class ComicController {
             @ApiResponse(responseCode = "404", description = "NOT FOUND")
     })
     public ResponseEntity<String> delete(@PathVariable("id") int id) {
-        return ResponseEntity.ok(comicService.delete(id));
+        return ResponseEntity.ok()
+                .contentType(MediaType.TEXT_PLAIN)
+                .body(comicService.delete(id));
     }
 }

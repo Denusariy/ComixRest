@@ -25,8 +25,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ComicServiceImplTest {
@@ -105,19 +104,7 @@ class ComicServiceImplTest {
             Executable executable = () -> comicService.save(requestDTO);
             //then
             assertThrows(BookNotFoundException.class, executable);
-        }
-
-        @Test
-        void should_SaveNewComic_When_BookIdIsValid() {
-            //given
-            Comic comic = new Comic(0, "TestComic", 2000, "Test Writer",
-                    "Test Artist", book);
-            when(bookRepositoryMock.findById(0)).thenReturn(Optional.of(book));
-            when(comicRepositoryMock.save(comic)).thenReturn(comic);
-            //when
-            comicService.save(requestDTO);
-            //then
-            verify(comicRepositoryMock).save(comic);
+            verify(comicRepositoryMock, never()).save(any());
         }
 
         @Test
@@ -140,6 +127,7 @@ class ComicServiceImplTest {
                     () -> assertEquals(expected.getArtist(), actual.getArtist()),
                     () -> assertEquals(expected.getBook(), actual.getBook())
             );
+            verify(comicRepositoryMock).save(comic);
         }
     }
 
@@ -205,6 +193,7 @@ class ComicServiceImplTest {
             String actual = comicService.delete(1);
             //then
             assertEquals(expected, actual);
+            verify(comicRepositoryMock).delete(comic);
         }
 
         @Test
@@ -215,15 +204,7 @@ class ComicServiceImplTest {
             Executable executable = () -> comicService.delete(anyInt());
             //then
             assertThrows(ComicNotFoundException.class, executable);
-        }
-        @Test
-        void should_DeleteComic_When_InputOK() {
-            //given
-            when(comicRepositoryMock.findById(1)).thenReturn(Optional.of(comic));
-            //when
-            comicService.delete(1);
-            //then
-            verify(comicRepositoryMock).delete(comic);
+            verify(comicRepositoryMock, never()).delete(comic);
         }
     }
 

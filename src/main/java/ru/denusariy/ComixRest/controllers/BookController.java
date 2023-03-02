@@ -26,7 +26,9 @@ public class BookController {
             responses = @ApiResponse(responseCode = "200", description = "OK"))
     public ResponseEntity<Page<BookResponseDTO>> getAllBooks(@RequestParam(value = "page", defaultValue = "0") Integer page,
                                                              @RequestParam(value = "size", defaultValue = "20") Integer size) {
-        return ResponseEntity.ok(bookService.findAllWithPagination(page, size));
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(bookService.findAllWithPagination(page, size));
     }
 
     @GetMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -35,7 +37,9 @@ public class BookController {
             @ApiResponse(responseCode = "404", description = "NOT FOUND")
     })
     public ResponseEntity<BookResponseDTO> show(@PathVariable("id") int id) {
-        return ResponseEntity.ok(bookService.findOne(id));
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(bookService.findOne(id));
     }
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -44,7 +48,10 @@ public class BookController {
             @ApiResponse(responseCode = "400", description = "BAD REQUEST")
     })
     public ResponseEntity<BookResponseDTO> create(@RequestBody @Valid BookRequestDTO bookRequestDTO) {
-        return ResponseEntity.ok(bookService.save(bookRequestDTO));
+        BookResponseDTO responseDTO = bookService.save(bookRequestDTO);
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(responseDTO);
     }
 
     @PatchMapping (value = "/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE},
@@ -54,8 +61,10 @@ public class BookController {
             @ApiResponse(responseCode = "404", description = "NOT FOUND")
     })
     public ResponseEntity<BookResponseDTO> edit(@PathVariable("id") int id,
-                                                @RequestBody @Valid Map<String, Object> fields) {
-        return ResponseEntity.ok(bookService.update(id, fields));
+                                                @RequestBody Map<String, Object> fields) {
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(bookService.update(id, fields));
     }
     @DeleteMapping(value = "/{id}", produces = {MediaType.TEXT_PLAIN_VALUE})
     @Operation(summary = "Удаление книги по id", responses = {
@@ -63,6 +72,8 @@ public class BookController {
             @ApiResponse(responseCode = "404", description = "NOT FOUND")
     })
     public ResponseEntity<String> delete(@PathVariable("id") int id) {
-        return ResponseEntity.ok(bookService.delete(id));
+        return ResponseEntity.ok()
+                .contentType(MediaType.TEXT_PLAIN)
+                .body(bookService.delete(id));
     }
 }
