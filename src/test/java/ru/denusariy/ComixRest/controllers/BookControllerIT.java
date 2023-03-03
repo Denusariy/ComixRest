@@ -259,43 +259,4 @@ class BookControllerIT {
                     """));
         }
     }
-
-//    @Nested
-//    class UpdateBookIT{
-//        @Test
-//        void should_ReturnValidResponseEntityWithUpdatedBook_When_RequestToUpdateIsValid() throws Exception{
-//            //given
-//            var requestBuilder = MockMvcRequestBuilders.patch("/books/1")
-//                    .contentType(MediaType.APPLICATION_JSON)
-//                    .content("""
-//                            {
-//                                "title": "New Title",
-//                                "format": "SING",
-//                                "year": 2023,
-//                                "altCover": true,
-//                                "autograph": true,
-//                                "signature": "Somebody"
-//                            }""");
-//            //when
-//            mockMvc.perform(requestBuilder)
-//            //then
-//                    .andDo(print())
-//                    .andExpect(status().isOk())
-//                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-//                    .andExpect(content().json("""
-//                            {
-//                                "title": "New Title",
-//                                "format": "SING",
-//                                "year": 2023,
-//                                "altCover": true,
-//                                "autograph": true,
-//                                "signature": "Somebody",
-//                                "comics": null
-//                            }"""));
-//            assertEquals(2, bookRepository.count());
-//        }
-//    }
-
-
-
 }
