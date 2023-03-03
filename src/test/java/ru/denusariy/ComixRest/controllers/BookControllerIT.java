@@ -1,5 +1,6 @@
 package ru.denusariy.ComixRest.controllers;
 
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -11,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.denusariy.ComixRest.repositories.BookRepository;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -23,105 +25,277 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class BookControllerIT {
     @Autowired
     MockMvc mockMvc;
-
     @Autowired
     BookRepository bookRepository;
 
-    @Test
-    void should_ReturnValidResponseEntity_When_BookIsPresent() throws Exception {
-        //given
-        var requestBuilder = MockMvcRequestBuilders.get("/books/1");
-        //when
-        this.mockMvc.perform(requestBuilder)
-        //then
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("""
+
+    @Nested
+    class ShowOneBookIT{
+        @Test
+        void should_ReturnValidResponseEntity_When_BookIsPresent() throws Exception {
+            //given
+            var requestBuilder = MockMvcRequestBuilders.get("/books/1");
+            //when
+            mockMvc.perform(requestBuilder)
+            //then
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(content().json("""
                                 {
-                                    "title": "Бэтмен Навсегда",
+                                    "title": "Batman New52",
                                     "format": "TPB",
                                     "year": 2010,
                                     "altCover": false,
                                     "autograph": false,
                                     "signature": null,
-                                    "comics": []
+                                    "comics": [
+                                        {
+                                            "title": "Batman New52 Vol 1 #1",
+                                            "year": 2010,
+                                            "writer": "Jeff Parker",
+                                            "artist": "Ron Lim"
+                                        }]
                                 }
                                 """));
+        }
+        @Test
+        void should_ReturnErrorResponseEntity_When_BookIsNotPresent() throws Exception {
+            //given
+            var requestBuilder = MockMvcRequestBuilders.get("/books/55");
+            //when
+            mockMvc.perform(requestBuilder)
+            //then
+                    .andDo(print())
+                    .andExpect(status().isNotFound())
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(content().json("""
+                                {
+                                    "message":"Книга с данным id не найдена!"
+                                }
+                    """));
+        }
     }
-
-    @Test
-    void should_ReturnValidPageResponseEntity_When_BookListIsNotEmpty() throws Exception {
-        //given
-        var requestBuilder = MockMvcRequestBuilders.get("/books");
-        //when
-        this.mockMvc.perform(requestBuilder)
-                //then
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json("""
-                                {"content":
-                                [{
-                                "title":"Бэтмен и Робин",
-                                "year":2010,
-                                "format":"TPB",
-                                "signature":null,
-                                "comics":[],
-                                "altCover":false,
-                                "autograph":false},
-                                {"title":"Бэтмен Навсегда",
-                                "year":2010,
-                                "format":"TPB",
-                                "signature":null,
-                                "comics":[],
-                                "altCover":false,
-                                "autograph":false}],
-                                "pageable":
-                                    {"sort":
-                                        {"empty":false,
-                                        "sorted":true,
-                                        "unsorted":false},
-                                        "offset":0,
-                                        "pageNumber":0,
-                                        "pageSize":20,
-                                        "paged":true,
-                                        "unpaged":false},
+    @Nested
+    class ShowPageAllBooksIT {
+        @Test
+        void should_ReturnValidPageResponseEntity_When_BookListIsNotEmpty() throws Exception {
+            //given
+            var requestBuilder = MockMvcRequestBuilders.get("/books");
+            //when
+            mockMvc.perform(requestBuilder)
+            //then
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(content().json("""
+                                {
+                                    "content":[
+                                        {
+                                            "title":"Batman New52",
+                                            "year":2010,
+                                            "format":"TPB",
+                                            "signature":null,
+                                            "comics": [
+                                                {
+                                                    "title": "Batman New52 Vol 1 #1",
+                                                    "year": 2010,
+                                                    "writer": "Jeff Parker",
+                                                    "artist": "Ron Lim"
+                                                }],
+                                            "altCover":false,
+                                            "autograph":false
+                                        },
+                                        {
+                                            "title":"Batman and Robin",
+                                            "year":2010,
+                                            "format":"TPB",
+                                            "signature":"Frank Miller",
+                                            "comics":[
+                                                {
+                                                    "title": "Batman and Robin Vol 1 #1",
+                                                    "year": 2009,
+                                                    "writer": "John Byrne",
+                                                    "artist": "Frank Miller"
+                                                },
+                                                {
+                                                    "title": "Batman and Robin Vol 1 #2",
+                                                    "year": 2009,
+                                                    "writer": "Jonathan Hickman",
+                                                    "artist": "Frank Miller"
+                                                }],
+                                            "altCover":true,
+                                            "autograph":true
+                                        }],
+                                    "pageable":
+                                        {
+                                            "sort":
+                                                {
+                                                    "empty":false,
+                                                    "sorted":true,
+                                                    "unsorted":false
+                                                },
+                                            "offset":0,
+                                            "pageNumber":0,
+                                            "pageSize":20,
+                                            "paged":true,
+                                            "unpaged":false
+                                        },
                                     "last":true,
                                     "totalElements":2,
                                     "totalPages":1,
                                     "size":20,
                                     "number":0,
                                     "sort":
-                                        {"empty":false,
-                                        "sorted":true,
-                                        "unsorted":false},
+                                        {
+                                            "empty":false,
+                                            "sorted":true,
+                                            "unsorted":false
+                                        },
                                     "first":true,
                                     "numberOfElements":2,
-                                    "empty":false}"""));
+                                    "empty":false
+                                }"""));
+        }
+    }
+    @Nested
+    class SaveNewBookIT {
+        @Test
+        void should_ReturnValidResponseEntityWithNewBook_When_RequestToSaveIsValid() throws Exception{
+            //given
+            var requestBuilder = MockMvcRequestBuilders.post("/books")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("""
+                    {
+                        "title": "Spider-Man",
+                        "format": "SING",
+                        "year": 2020,
+                        "altCover": false,
+                        "autograph": false,
+                        "signature": null
+                    }""");
+            //when
+            mockMvc.perform(requestBuilder)
+            //then
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(content().json("""
+                        {
+                            "title": "Spider-Man",
+                            "format": "SING",
+                            "year": 2020,
+                            "altCover": false,
+                            "autograph": false,
+                            "signature": null,
+                            "comics":null
+                        }"""
+                    ));
+            assertEquals(3, bookRepository.count());
+        }
+
+        @Test
+        void should_ReturnErrorMessage_When_RequestToSaveIsNotValid() throws Exception{
+            //given
+            var requestBuilder = MockMvcRequestBuilders.post("/books")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("""
+                    {
+                        "title": "",
+                        "format": "SING",
+                        "year": 0,
+                        "altCover": false,
+                        "autograph": false,
+                        "signature": null
+                    }""");
+            //when
+            mockMvc.perform(requestBuilder)
+            //then
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(content().json("""
+                        {
+                            "errors":
+                                {
+                                    "year":"Год издания должен быть больше 1900",
+                                    "title":"Название книги не должно быть пустым"
+                                }
+                        }"""));
+            assertEquals(2, bookRepository.count());
+        }
     }
 
-//    @Test
-//    void should_ReturnValidResponseEntity_When_ResponseIsValid() {
-//        //given
-//
-//        //when
-//
-//        //then
+    @Nested
+    class DeleteBookIT{
+        @Test
+        void should_ReturnValidResponseEntity_When_DeletedBookIsPresent() throws Exception{
+            //given
+            var requestBuilder = MockMvcRequestBuilders.delete("/books/1");
+            //when
+            mockMvc.perform(requestBuilder)
+            //then
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(MediaType.TEXT_PLAIN))
+                    .andExpect(content().string("Batman New52"));
+            assertEquals(1, bookRepository.count());
+        }
+
+        @Test
+        void should_ReturnErrorResponseEntity_When_DeletedBookIsNotPresent() throws Exception{
+            //given
+            var requestBuilder = MockMvcRequestBuilders.delete("/books/55");
+            //when
+            mockMvc.perform(requestBuilder)
+            //then
+                    .andDo(print())
+                    .andExpect(status().isNotFound())
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(content().json("""
+                                {
+                                    "message":"Книга с данным id не найдена!"
+                                }
+                    """));
+        }
+    }
+
+//    @Nested
+//    class UpdateBookIT{
+//        @Test
+//        void should_ReturnValidResponseEntityWithUpdatedBook_When_RequestToUpdateIsValid() throws Exception{
+//            //given
+//            var requestBuilder = MockMvcRequestBuilders.patch("/books/1")
+//                    .contentType(MediaType.APPLICATION_JSON)
+//                    .content("""
+//                            {
+//                                "title": "New Title",
+//                                "format": "SING",
+//                                "year": 2023,
+//                                "altCover": true,
+//                                "autograph": true,
+//                                "signature": "Somebody"
+//                            }""");
+//            //when
+//            mockMvc.perform(requestBuilder)
+//            //then
+//                    .andDo(print())
+//                    .andExpect(status().isOk())
+//                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+//                    .andExpect(content().json("""
+//                            {
+//                                "title": "New Title",
+//                                "format": "SING",
+//                                "year": 2023,
+//                                "altCover": true,
+//                                "autograph": true,
+//                                "signature": "Somebody",
+//                                "comics": null
+//                            }"""));
+//            assertEquals(2, bookRepository.count());
+//        }
 //    }
 
-//    @Test
-//    void correctLoginTest() throws Exception {
-//        this.mockMvc.perform(formLogin().user("name").password("password"))
-//                .andDo(print())
-//                .andExpect(status().is3xxRedirection())
-//                .andExpect(redirectedUrl("/главная страница"));
-//    }
-//
-//    @Test
-//    void badCredential() throws Exception {
-//        this.mockMvc.perform(post("/login").param("user", "wrong_name"))
-//                .andDo(print())
-//                .andExpect(status().isForbidden());
-//    }
+
+
 }

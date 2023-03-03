@@ -16,9 +16,7 @@ import ru.denusariy.ComixRest.domain.dto.response.BookResponseDTO;
 import ru.denusariy.ComixRest.domain.enums.Format;
 import ru.denusariy.ComixRest.services.BookService;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -92,7 +90,7 @@ class BookControllerTest {
     @Nested
     class CreateTest{
         @Test
-        void should_ReturnValidResponseEntity_When_ResponseIsValid() {
+        void should_ReturnValidResponseEntity_When_SaveRequestIsValid() {
             //given
             BookRequestDTO requestDTO = new BookRequestDTO("Title", 2000, Format.SING, false,
                     false, null);
@@ -101,6 +99,43 @@ class BookControllerTest {
             when(bookServiceMock.save(requestDTO)).thenReturn(expected);
             //when
             ResponseEntity<?> actual = bookController.create(requestDTO);
+            //then
+            assertNotNull(actual);
+            assertEquals(HttpStatus.OK, actual.getStatusCode());
+            assertEquals(MediaType.APPLICATION_JSON, actual.getHeaders().getContentType());
+            assertEquals(expected, actual.getBody());
+        }
+    }
+
+    @Nested
+    class DeleteTest{
+        @Test
+        void should_ReturnValidResponseEntity_When_DeleteRequestIsValid() {
+            //given
+            String expected = "Some_name";
+            when(bookServiceMock.delete(1)).thenReturn(expected);
+            //when
+            ResponseEntity<?> actual = bookController.delete(1);
+            //then
+            assertNotNull(actual);
+            assertEquals(HttpStatus.OK, actual.getStatusCode());
+            assertEquals(MediaType.TEXT_PLAIN, actual.getHeaders().getContentType());
+            assertEquals(expected, actual.getBody());
+        }
+    }
+
+    @Nested
+    class EditTest{
+        @Test
+        void should_ReturnValidResponseEntity_When_UpdateRequestIsValid() {
+            //given
+            Map<String, Object> fields = new HashMap<>();
+            fields.put("title", "Test");
+            BookResponseDTO expected = new BookResponseDTO("Test", 2000, Format.SING, false,
+                    false, null, null);
+            when(bookServiceMock.update(1, fields)).thenReturn(expected);
+            //when
+            ResponseEntity<?> actual = bookController.edit(1, fields);
             //then
             assertNotNull(actual);
             assertEquals(HttpStatus.OK, actual.getStatusCode());
