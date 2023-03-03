@@ -16,3 +16,5 @@ insert into comix_rest_db_test.public.comic(id, book_id, title, year, writer, ar
 insert into comix_rest_db_test.public.comic(id, book_id, title, year, writer, artist) values
     (3, 2, 'Batman and Robin Vol 1 #2', 2009, 'Jonathan Hickman', 'Frank Miller');
 
+alter sequence comic_id_seq restart with 10;
+

@@ -30,7 +30,7 @@ public class ComicServiceImpl implements ComicService {
     //Сохранить комикс с привязкой к книге по её id
     @Transactional
     public ComicResponseDTO save(ComicRequestDTO comicRequestDTO) {
-        Book book = bookRepository.findById(comicRequestDTO.getBookId()).orElseThrow(BookNotFoundException::new);
+        Book book = bookRepository.findById(comicRequestDTO.getBook_id()).orElseThrow(BookNotFoundException::new);
         Comic newComic = comicRepository.save(convertToComic(comicRequestDTO));
         newComic.setBook(book);
         book.setComics(new ArrayList<>(Collections.singletonList(newComic)));

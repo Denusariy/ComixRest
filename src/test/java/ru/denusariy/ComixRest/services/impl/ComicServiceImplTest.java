@@ -62,13 +62,11 @@ class ComicServiceImplTest {
     @Nested
     class ConvertToBookTest {
         @Test
-        void should_CompareBookRequestDTOToBook() {
+        void should_CompareComicRequestDTOToComic() {
             //given
-            Book book = new Book(0, null, 0, null, false, false,
-                    null, null);
             ComicRequestDTO requestDTO = new ComicRequestDTO("TestComic", 2000, "Test Writer",
-                    "Test Artist", 0);
-            Comic expected = new Comic(0, "TestComic", 2000, "Test Writer", "Test Artist", book);
+                    "Test Artist", 1);
+            Comic expected = new Comic(0, "TestComic", 2000, "Test Writer", "Test Artist", null);
             //when
             Comic actual = modelMapperMock.map(requestDTO, Comic.class);
             //then
@@ -347,7 +345,7 @@ class ComicServiceImplTest {
                     "Test Writer","Test Artist", null)));
         }
         @Test
-        void should_ReturnEmptyList_When_ThereIsNoSuitableComics() {
+        void should_ReturnEmptyList_When_ResultListIsEmpty() {
             //given
             List<ComicResponseDTO> expected = Collections.emptyList();
             when(comicRepositoryMock.findByWriterContains(anyString())).thenReturn(Collections.emptyList());
@@ -358,7 +356,7 @@ class ComicServiceImplTest {
         }
 
         @Test
-        void should_ReturnListComicResponseDTO_When_ThereAreSuitableComics() {
+        void should_ReturnListComicResponseDTO_When_ResultListIsNotEmpty() {
             //given
             List<ComicResponseDTO> expected = Collections.singletonList(new ComicResponseDTO("TestComic", 2000,
                     "Test Writer","Test Artist", null));
@@ -380,7 +378,7 @@ class ComicServiceImplTest {
                     "Test Writer","Test Artist", null)));
         }
         @Test
-        void should_ReturnEmptyList_When_ThereIsNoSuitableComics() {
+        void should_ReturnEmptyList_When_ResultListIsEmpty() {
             //given
             List<ComicResponseDTO> expected = Collections.emptyList();
             when(comicRepositoryMock.findByArtistContains(anyString())).thenReturn(Collections.emptyList());
@@ -391,7 +389,7 @@ class ComicServiceImplTest {
         }
 
         @Test
-        void should_ReturnListComicResponseDTO_When_ThereAreSuitableComics() {
+        void should_ReturnListComicResponseDTO_When_ResultListIsNotEmpty() {
             //given
             List<ComicResponseDTO> expected = Collections.singletonList(new ComicResponseDTO("TestComic", 2000,
                     "Test Writer","Test Artist", null));

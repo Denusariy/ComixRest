@@ -26,5 +26,5 @@ public class ComicRequestDTO {
     @NotBlank(message = "У комикса должен быть художник")
     private String artist;
     @Schema(description = "id книги, в которой создаем комикс")
-    private int bookId;
+    private int book_id;
 }
