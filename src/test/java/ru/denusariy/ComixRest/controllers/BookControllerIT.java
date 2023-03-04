@@ -28,7 +28,6 @@ class BookControllerIT {
     @Autowired
     BookRepository bookRepository;
 
-
     @Nested
     class ShowOneBookIT{
         @Test
@@ -249,6 +248,68 @@ class BookControllerIT {
             //when
             mockMvc.perform(requestBuilder)
             //then
+                    .andDo(print())
+                    .andExpect(status().isNotFound())
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(content().json("""
+                                {
+                                    "message":"Книга с данным id не найдена!"
+                                }
+                    """));
+        }
+    }
+
+    @Nested
+    class UpdateBookIT {
+        @Test
+        void should_ReturnValidResponseEntityWithUpdatedBook_When_RequestToUpdateIsValid() throws Exception{
+            //given
+            var requestBuilder = MockMvcRequestBuilders.patch("/books/1")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("""
+                    {
+                        "title": "Spider-Man",
+                        "year": 2020
+                    }""");
+            //when
+            mockMvc.perform(requestBuilder)
+                    //then
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(content().json("""
+                        {
+                            "title": "Spider-Man",
+                            "format": "TPB",
+                            "year": 2020,
+                            "altCover": false,
+                            "autograph": false,
+                            "signature": null,
+                            "comics": [
+                                    {
+                                        "title": "Batman New52 Vol 1 #1",
+                                        "year": 2010,
+                                        "writer": "Jeff Parker",
+                                        "artist": "Ron Lim"
+                                    }]
+                        }"""
+                    ));
+            assertEquals(2, bookRepository.count());
+        }
+
+        @Test
+        void should_ReturnErrorResponseEntity_When_UpdatedBookIsNotPresent() throws Exception{
+            //given
+            var requestBuilder = MockMvcRequestBuilders.patch("/books/55")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("""
+                    {
+                        "title": "Spider-Man",
+                        "year": 2020
+                    }""");
+            //when
+            mockMvc.perform(requestBuilder)
+                    //then
                     .andDo(print())
                     .andExpect(status().isNotFound())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
