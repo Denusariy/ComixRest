@@ -29,52 +29,54 @@ class BookControllerIT {
     BookRepository bookRepository;
 
     @Nested
-    class ShowOneBookIT{
+    class ShowOneBookIT {
         @Test
         void should_ReturnValidResponseEntity_When_BookIsPresent() throws Exception {
             //given
             var requestBuilder = MockMvcRequestBuilders.get("/books/1");
             //when
             mockMvc.perform(requestBuilder)
-            //then
+                    //then
                     .andDo(print())
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                     .andExpect(content().json("""
-                                {
-                                    "title": "Batman New52",
-                                    "format": "TPB",
-                                    "year": 2010,
-                                    "altCover": false,
-                                    "autograph": false,
-                                    "signature": null,
-                                    "comics": [
-                                        {
-                                            "title": "Batman New52 Vol 1 #1",
-                                            "year": 2010,
-                                            "writer": "Jeff Parker",
-                                            "artist": "Ron Lim"
-                                        }]
-                                }
-                                """));
+                            {
+                                "title": "Batman New52",
+                                "format": "TPB",
+                                "year": 2010,
+                                "altCover": false,
+                                "autograph": false,
+                                "signature": null,
+                                "comics": [
+                                    {
+                                        "title": "Batman New52 Vol 1 #1",
+                                        "year": 2010,
+                                        "writer": "Jeff Parker",
+                                        "artist": "Ron Lim"
+                                    }]
+                            }
+                            """));
         }
+
         @Test
         void should_ReturnErrorResponseEntity_When_BookIsNotPresent() throws Exception {
             //given
             var requestBuilder = MockMvcRequestBuilders.get("/books/55");
             //when
             mockMvc.perform(requestBuilder)
-            //then
+                    //then
                     .andDo(print())
                     .andExpect(status().isNotFound())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                     .andExpect(content().json("""
-                                {
-                                    "message":"Книга с данным id не найдена!"
-                                }
-                    """));
+                                        {
+                                            "message":"Книга с данным id не найдена!"
+                                        }
+                            """));
         }
     }
+
     @Nested
     class ShowPageAllBooksIT {
         @Test
@@ -83,157 +85,158 @@ class BookControllerIT {
             var requestBuilder = MockMvcRequestBuilders.get("/books");
             //when
             mockMvc.perform(requestBuilder)
-            //then
+                    //then
                     .andDo(print())
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                     .andExpect(content().json("""
-                                {
-                                    "content":[
-                                        {
-                                            "title":"Batman New52",
-                                            "year":2010,
-                                            "format":"TPB",
-                                            "signature":null,
-                                            "comics": [
-                                                {
-                                                    "title": "Batman New52 Vol 1 #1",
-                                                    "year": 2010,
-                                                    "writer": "Jeff Parker",
-                                                    "artist": "Ron Lim"
-                                                }],
-                                            "altCover":false,
-                                            "autograph":false
-                                        },
-                                        {
-                                            "title":"Batman and Robin",
-                                            "year":2010,
-                                            "format":"TPB",
-                                            "signature":"Frank Miller",
-                                            "comics":[
-                                                {
-                                                    "title": "Batman and Robin Vol 1 #1",
-                                                    "year": 2009,
-                                                    "writer": "John Byrne",
-                                                    "artist": "Frank Miller"
-                                                },
-                                                {
-                                                    "title": "Batman and Robin Vol 1 #2",
-                                                    "year": 2009,
-                                                    "writer": "Jonathan Hickman",
-                                                    "artist": "Frank Miller"
-                                                }],
-                                            "altCover":true,
-                                            "autograph":true
-                                        }],
-                                    "pageable":
-                                        {
-                                            "sort":
-                                                {
-                                                    "empty":false,
-                                                    "sorted":true,
-                                                    "unsorted":false
-                                                },
-                                            "offset":0,
-                                            "pageNumber":0,
-                                            "pageSize":20,
-                                            "paged":true,
-                                            "unpaged":false
-                                        },
-                                    "last":true,
-                                    "totalElements":2,
-                                    "totalPages":1,
-                                    "size":20,
-                                    "number":0,
-                                    "sort":
-                                        {
-                                            "empty":false,
-                                            "sorted":true,
-                                            "unsorted":false
-                                        },
-                                    "first":true,
-                                    "numberOfElements":2,
-                                    "empty":false
-                                }"""));
+                            {
+                                "content":[
+                                    {
+                                        "title":"Batman New52",
+                                        "year":2010,
+                                        "format":"TPB",
+                                        "signature":null,
+                                        "comics": [
+                                            {
+                                                "title": "Batman New52 Vol 1 #1",
+                                                "year": 2010,
+                                                "writer": "Jeff Parker",
+                                                "artist": "Ron Lim"
+                                            }],
+                                        "altCover":false,
+                                        "autograph":false
+                                    },
+                                    {
+                                        "title":"Batman and Robin",
+                                        "year":2010,
+                                        "format":"TPB",
+                                        "signature":"Frank Miller",
+                                        "comics":[
+                                            {
+                                                "title": "Batman and Robin Vol 1 #1",
+                                                "year": 2009,
+                                                "writer": "John Byrne",
+                                                "artist": "Frank Miller"
+                                            },
+                                            {
+                                                "title": "Batman and Robin Vol 1 #2",
+                                                "year": 2009,
+                                                "writer": "Jonathan Hickman",
+                                                "artist": "Frank Miller"
+                                            }],
+                                        "altCover":true,
+                                        "autograph":true
+                                    }],
+                                "pageable":
+                                    {
+                                        "sort":
+                                            {
+                                                "empty":false,
+                                                "sorted":true,
+                                                "unsorted":false
+                                            },
+                                        "offset":0,
+                                        "pageNumber":0,
+                                        "pageSize":20,
+                                        "paged":true,
+                                        "unpaged":false
+                                    },
+                                "last":true,
+                                "totalElements":2,
+                                "totalPages":1,
+                                "size":20,
+                                "number":0,
+                                "sort":
+                                    {
+                                        "empty":false,
+                                        "sorted":true,
+                                        "unsorted":false
+                                    },
+                                "first":true,
+                                "numberOfElements":2,
+                                "empty":false
+                            }"""));
         }
     }
+
     @Nested
     class SaveNewBookIT {
         @Test
-        void should_ReturnValidResponseEntityWithNewBook_When_RequestToSaveIsValid() throws Exception{
+        void should_ReturnValidResponseEntityWithNewBook_When_RequestToSaveIsValid() throws Exception {
             //given
             var requestBuilder = MockMvcRequestBuilders.post("/books")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content("""
-                    {
-                        "title": "Spider-Man",
-                        "format": "SING",
-                        "year": 2020,
-                        "altCover": false,
-                        "autograph": false,
-                        "signature": null
-                    }""");
+                            {
+                                "title": "Spider-Man",
+                                "format": "SING",
+                                "year": 2020,
+                                "altCover": false,
+                                "autograph": false,
+                                "signature": null
+                            }""");
             //when
             mockMvc.perform(requestBuilder)
-            //then
+                    //then
                     .andDo(print())
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                     .andExpect(content().json("""
-                        {
-                            "title": "Spider-Man",
-                            "format": "SING",
-                            "year": 2020,
-                            "altCover": false,
-                            "autograph": false,
-                            "signature": null,
-                            "comics":null
-                        }"""
+                            {
+                                "title": "Spider-Man",
+                                "format": "SING",
+                                "year": 2020,
+                                "altCover": false,
+                                "autograph": false,
+                                "signature": null,
+                                "comics":null
+                            }"""
                     ));
             assertEquals(3, bookRepository.count());
         }
 
         @Test
-        void should_ReturnErrorMessage_When_RequestToSaveIsNotValid() throws Exception{
+        void should_ReturnErrorMessage_When_RequestToSaveIsNotValid() throws Exception {
             //given
             var requestBuilder = MockMvcRequestBuilders.post("/books")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content("""
-                    {
-                        "title": "",
-                        "format": "SING",
-                        "year": 0,
-                        "altCover": false,
-                        "autograph": false,
-                        "signature": null
-                    }""");
+                            {
+                                "title": "",
+                                "format": "SING",
+                                "year": 0,
+                                "altCover": false,
+                                "autograph": false,
+                                "signature": null
+                            }""");
             //when
             mockMvc.perform(requestBuilder)
-            //then
+                    //then
                     .andDo(print())
                     .andExpect(status().isBadRequest())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                     .andExpect(content().json("""
-                        {
-                            "errors":
-                                {
-                                    "year":"Год издания должен быть больше 1900",
-                                    "title":"Название книги не должно быть пустым"
-                                }
-                        }"""));
+                            {
+                                "errors":
+                                    {
+                                        "year":"Год издания должен быть больше 1900",
+                                        "title":"Название книги не должно быть пустым"
+                                    }
+                            }"""));
             assertEquals(2, bookRepository.count());
         }
     }
 
     @Nested
-    class DeleteBookIT{
+    class DeleteBookIT {
         @Test
-        void should_ReturnValidResponseEntity_When_DeletedBookIsPresent() throws Exception{
+        void should_ReturnValidResponseEntity_When_DeletedBookIsPresent() throws Exception {
             //given
             var requestBuilder = MockMvcRequestBuilders.delete("/books/1");
             //when
             mockMvc.perform(requestBuilder)
-            //then
+                    //then
                     .andDo(print())
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.TEXT_PLAIN))
@@ -242,35 +245,35 @@ class BookControllerIT {
         }
 
         @Test
-        void should_ReturnErrorResponseEntity_When_DeletedBookIsNotPresent() throws Exception{
+        void should_ReturnErrorResponseEntity_When_DeletedBookIsNotPresent() throws Exception {
             //given
             var requestBuilder = MockMvcRequestBuilders.delete("/books/55");
             //when
             mockMvc.perform(requestBuilder)
-            //then
+                    //then
                     .andDo(print())
                     .andExpect(status().isNotFound())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                     .andExpect(content().json("""
-                                {
-                                    "message":"Книга с данным id не найдена!"
-                                }
-                    """));
+                                        {
+                                            "message":"Книга с данным id не найдена!"
+                                        }
+                            """));
         }
     }
 
     @Nested
     class UpdateBookIT {
         @Test
-        void should_ReturnValidResponseEntityWithUpdatedBook_When_RequestToUpdateIsValid() throws Exception{
+        void should_ReturnValidResponseEntityWithUpdatedBook_When_RequestToUpdateIsValid() throws Exception {
             //given
             var requestBuilder = MockMvcRequestBuilders.patch("/books/1")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content("""
-                    {
-                        "title": "Spider-Man",
-                        "year": 2020
-                    }""");
+                            {
+                                "title": "Spider-Man",
+                                "year": 2020
+                            }""");
             //when
             mockMvc.perform(requestBuilder)
                     //then
@@ -278,35 +281,35 @@ class BookControllerIT {
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                     .andExpect(content().json("""
-                        {
-                            "title": "Spider-Man",
-                            "format": "TPB",
-                            "year": 2020,
-                            "altCover": false,
-                            "autograph": false,
-                            "signature": null,
-                            "comics": [
-                                    {
-                                        "title": "Batman New52 Vol 1 #1",
-                                        "year": 2010,
-                                        "writer": "Jeff Parker",
-                                        "artist": "Ron Lim"
-                                    }]
-                        }"""
+                            {
+                                "title": "Spider-Man",
+                                "format": "TPB",
+                                "year": 2020,
+                                "altCover": false,
+                                "autograph": false,
+                                "signature": null,
+                                "comics": [
+                                        {
+                                            "title": "Batman New52 Vol 1 #1",
+                                            "year": 2010,
+                                            "writer": "Jeff Parker",
+                                            "artist": "Ron Lim"
+                                        }]
+                            }"""
                     ));
             assertEquals(2, bookRepository.count());
         }
 
         @Test
-        void should_ReturnErrorResponseEntity_When_UpdatedBookIsNotPresent() throws Exception{
+        void should_ReturnErrorResponseEntity_When_UpdatedBookIsNotPresent() throws Exception {
             //given
             var requestBuilder = MockMvcRequestBuilders.patch("/books/55")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content("""
-                    {
-                        "title": "Spider-Man",
-                        "year": 2020
-                    }""");
+                            {
+                                "title": "Spider-Man",
+                                "year": 2020
+                            }""");
             //when
             mockMvc.perform(requestBuilder)
                     //then
@@ -314,10 +317,10 @@ class BookControllerIT {
                     .andExpect(status().isNotFound())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                     .andExpect(content().json("""
-                                {
-                                    "message":"Книга с данным id не найдена!"
-                                }
-                    """));
+                                        {
+                                            "message":"Книга с данным id не найдена!"
+                                        }
+                            """));
         }
     }
 }

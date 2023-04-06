@@ -47,7 +47,7 @@ class ComicServiceImplTest {
             ComicResponseDTO expected = new ComicResponseDTO("TestComic", 2000, "Test Writer",
                     "Test Artist", null);
             //when
-            ComicResponseDTO actual = modelMapperMock.map(comic, ComicResponseDTO.class);
+            ComicResponseDTO actual = comicService.convertToComicResponseDTO(comic);
             //then
             assertAll(
                     () -> assertEquals(expected.getTitle(), actual.getTitle()),
@@ -68,7 +68,7 @@ class ComicServiceImplTest {
                     "Test Artist", 1);
             Comic expected = new Comic(0, "TestComic", 2000, "Test Writer", "Test Artist", null);
             //when
-            Comic actual = modelMapperMock.map(requestDTO, Comic.class);
+            Comic actual = comicService.convertToComic(requestDTO);
             //then
             assertAll(
                     () -> assertEquals(expected.getId(), actual.getId()),

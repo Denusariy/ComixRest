@@ -1,0 +1,29 @@
+version: '3.9'
+services:
+  comics-api-service:
+    image: comics-api:latest
+    build:
+      context: .
+    container_name: comics-api-service
+    depends_on:
+      - postgres
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/comix_rest_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=parolsql
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
+    ports:
+      - "8585:8080/tcp"
+
+  postgres:
+    image: postgres:15.1
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=parolsql
+      - POSTGRES_DB=comix_rest_db
+    volumes:
+      - /project/volumes/postgresdata:/var/lib/postgresql/data
+    ports:
+      - "5485:5432/tcp"

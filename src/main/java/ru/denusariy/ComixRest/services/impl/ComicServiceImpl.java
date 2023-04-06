@@ -108,12 +108,12 @@ public class ComicServiceImpl implements ComicService {
     }
 
     //Маппинг из ComicRequestDTO в Comic
-    private Comic convertToComic(ComicRequestDTO comicRequestDTO) {
+    public Comic convertToComic(ComicRequestDTO comicRequestDTO) {
         return modelMapper.map(comicRequestDTO, Comic.class);
     }
 
     //Маппинг из Comic в ComicResponseDTO
-    private ComicResponseDTO convertToComicResponseDTO(Comic comic) {
+    public ComicResponseDTO convertToComicResponseDTO(Comic comic) {
         return modelMapper.map(comic, ComicResponseDTO.class);
     }
 

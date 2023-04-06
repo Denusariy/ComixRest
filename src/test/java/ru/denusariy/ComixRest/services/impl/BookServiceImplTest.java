@@ -43,7 +43,7 @@ class BookServiceImplTest {
             BookResponseDTO expected = new BookResponseDTO("TestBook", 2000, Format.SING, false,
                     false, null, null);
             //when
-            BookResponseDTO actual = modelMapperMock.map(book, BookResponseDTO.class);
+            BookResponseDTO actual = bookService.convertToBookResponseDTO(book);
             //then
             assertAll(
                     () -> assertEquals(expected.getTitle(), actual.getTitle()),
@@ -67,7 +67,7 @@ class BookServiceImplTest {
             Book expected = new Book(0, "TestBook", 2000, Format.SING, false, false,
                     null, null);
             //when
-            Book actual = modelMapperMock.map(requestDTO, Book.class);
+            Book actual = bookService.convertToBook(requestDTO);
             //then
             assertAll(
                     () -> assertEquals(expected.getId(), actual.getId()),
